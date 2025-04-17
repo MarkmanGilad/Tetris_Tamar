@@ -8,9 +8,10 @@ def all_states():
     env = Environment(state=state)
     env.select_falling_piece(state)
     env.select_falling_piece(state)
-    states, actions = env.all_states(state)
+    states, states_dqn, actions = env.all_states(state)
 
     print(states)
+    print(states_dqn)
     print(actions)
 
 def pieces_test():
@@ -26,5 +27,31 @@ def pieces_test():
     for i in range(4):
         print(np.rot90(pieces[3], k=i) )
 
+def height() :
+    board = np.array([
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [2, 2, 2, 0, 0, 0, 0, 0, 0, 0]])
+    
+    
+    
+    return 
 # pieces_test()
 all_states()

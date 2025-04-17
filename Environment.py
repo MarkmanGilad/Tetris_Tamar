@@ -178,72 +178,66 @@ class Environment():
             self.select_falling_piece(next_state)
         return next_state
 
-    def next_state(self, state, action): #לדאוג שהפרס תואם - לא נותן פעמיים פרס על שורה למטה, נותן פרס על הורדת שורה בנקסט סטייט
-        next_state = state.copy()
-        row, col, piece = next_state.falling_piece # מציאת מיקום וצורת החלק
-        rows, cols = piece.shape # מציאת אורך ורוחב החלק
-        new_piece = False
-        done = False
-        landing = self.landing
-        full_rows = 0
+    #region next_state
+    # def next_state(self, state, action): #לדאוג שהפרס תואם - לא נותן פעמיים פרס על שורה למטה, נותן פרס על הורדת שורה בנקסט סטייט
+    #     next_state = state.copy()
+    #     row, col, piece = next_state.falling_piece # מציאת מיקום וצורת החלק
+    #     rows, cols = piece.shape # מציאת אורך ורוחב החלק
+    #     new_piece = False
+    #     done = False
+    #     landing = self.landing
+    #     full_rows = 0
         
-        if action: # אם היא חוקית
-            self.move(next_state, action) # מזיז את החלק
+    #     if action: # אם היא חוקית
+    #         self.move(next_state, action) # מזיז את החלק
 
-        if not self.is_collision(next_state, falling_piece=next_state.falling_piece, dRow=1):
-            self.down_piece(next_state)    # יורד שורה
+    #     if not self.is_collision(next_state, falling_piece=next_state.falling_piece, dRow=1):
+    #         self.down_piece(next_state)    # יורד שורה
 
-        if self.is_collision(next_state, falling_piece=next_state.falling_piece, dRow=1):
-            full_rows = self.count_full_rows(next_state)
-            landing = self.landing_height(next_state)
-            self.clear_rows(next_state) # מוחק שורות אם צריך  
-            self.select_falling_piece(next_state) #אתחול המשתנים
-            self.add_piece(next_state)
-            new_piece = True
-            done = self.reached_top(next_state)
-            if not done:
-                self.reward += 0.5
+    #     if self.is_collision(next_state, falling_piece=next_state.falling_piece, dRow=1):
+    #         full_rows = self.count_full_rows(next_state)
+    #         landing = self.landing_height(next_state)
+    #         self.clear_rows(next_state) # מוחק שורות אם צריך  
+    #         self.select_falling_piece(next_state) #אתחול המשתנים
+    #         self.add_piece(next_state)
+    #         new_piece = True
+    #         done = self.reached_top(next_state)
+    #         if not done:
+    #             self.reward += 0.5
 
-        next_dqn_state = np.array([
-            self.count_holes(next_state),
-            landing,
-            self.wells(next_state),
-            self.bumpiness(next_state),
-            self.total_height(next_state),
-            full_rows,
-            done ##########################
-        ], dtype=np.float32)
+    #     next_dqn_state = np.array([
+    #         self.count_holes(next_state),
+    #         landing,
+    #         self.wells(next_state),
+    #         self.bumpiness(next_state),
+    #         self.total_height(next_state),
+    #         full_rows,
+    #         done ##########################
+    #     ], dtype=np.float32)
 
-            # return dqn_state, self.get_reward(next_state), done, new_piece
+    #         # return dqn_state, self.get_reward(next_state), done, new_piece
 
-        return next_state, next_dqn_state, self.get_reward(next_state), done, new_piece
-    
-    def to_DQN_state(self, state, landing, full_rows, done):
-        dqn_state = np.array([
-            self.count_holes(state),
-            landing,
-            self.wells(state),
-            self.bumpiness(state),
-            self.total_height(state),
-            full_rows,
-            done 
-        ], dtype=np.float32)
+    #     return next_state, next_dqn_state, self.get_reward(next_state), done, new_piece
+    #endregion
 
-        return dqn_state
+    def to_DQN_state(self, state, landing=None, full_rows=None, done=None):
+        heights = self.columns_heights(state)
+        DQN_state = np.append(heights, heights.max())
+        return DQN_state
 
     def landed (self, state):
         return self.is_collision(state, state.falling_piece, dRow=1)
 
-    def highest_piece_in_cols(self, state):
-        highest_board = np.full((1, COLS), ROWS, dtype=int)
+    # def highest_piece_in_cols(self, state):
+    #     highest_board = np.full((1, COLS), 0, dtype=int)
 
-        for i in range(COLS):
-            column = state.board[:, i]
-            for j in range (0, ROWS):
-                if column[j] != 0:
-                    highest_board[0, i] = j
-                    break
-        return highest_board
+    #     for i in range(COLS):
+    #         column = state.board[:, i]
+    #         for j in range (0, ROWS):
+    #             if column[j] != 0:
+    #                 highest_board[0, i] = j
+    #                 break
+    #     return highest_board
     
     def count_holes(self, state):
         highest_board = self.highest_piece_in_cols(state)
@@ -289,13 +283,15 @@ class Environment():
             bumps += abs(highest_board[0, i] - highest_board[0, i-1])
         return bumps
 
-    def total_height(self, state):
-        highest_board = self.highest_piece_in_cols(state)
-        total = 0
-        for i in range(COLS):
-            total += highest_board[0, i]
-        return total
-    
+    def columns_heights (self, state):
+        board = state.get_board_w_piece()
+        nonzero_mask = board != 0
+        # use argmax on the mask — it returns the first True in each column
+        # for columns with no non-zero values, this will return 0, so we must handle that
+        first_nonzero_rows = np.where(nonzero_mask.any(axis=0), nonzero_mask.argmax(axis=0), 20)
+        heights = 20 - first_nonzero_rows
+        return heights
+
     def count_full_rows(self, state):
         temp_board = state.board.copy() # יצירת לוח זמני
         temp_board[temp_board != 0] = 1 # החלפת כל המספרים שלא 0 ב1
@@ -312,6 +308,7 @@ class Environment():
             
     def all_states (self, state):
         states = []
+        states_dqn = []
         actions = []
         _, _, piece = state.falling_piece
        
@@ -335,77 +332,13 @@ class Environment():
                 next_state.falling_piece = row, col, piece
 
                 next_state = self.drop_piece(next_state)
+                # full_rows = self.count_full_rows(next_state)
+                # landing = self.landing_height(next_state)
+                # done = next_state.falling_piece[0] == 0
+                state_dqn = self.to_DQN_state(next_state)
+                states_dqn.append(state_dqn)
                 states.append(next_state.get_board_w_piece())
                 actions.append((rotate, new_col))
 
-        return states, actions
+        return states, states_dqn, actions
 
-
-
-    
-
-    
-
-
-
-
-
-
-        
-
-
-
-    
-        
-    # def next_state(self, state, action): #לדאוג שהפרס תואם - לא נותן פעמיים פרס על שורה למטה, נותן פרס על הורדת שורה בנקסט סטייט
-    #     next_state = state.copy()
-    #     row, col, piece = next_state.falling_piece # מציאת מיקום וצורת החלק
-    #     rows, cols = piece.shape # מציאת אורך ורוחב החלק
-    #     new_piece = False
-        
-    #     if not self.is_collision(next_state, falling_piece=next_state.falling_piece, dRow=1):
-    #         self.down_piece(next_state)    # יורד שורה
-
-    #     if self.is_collision(next_state, falling_piece=next_state.falling_piece, dRow=1):
-
-    #         # row_sums = self.pieces_in_row(next_state, row+rows)
-    #         # self.reward += ((row_sums**2)*row) / 1000 #הוספת מכפלה במספר השורה
-    #         # self.reward += self.holes_reward(next_state) 
-
-    #         self.clear_rows(next_state) # מוחק שורות אם צריך  
-    #         self.select_falling_piece(next_state) #אתחול המשתנים
-    #         self.add_piece(next_state)
-    #         new_piece = True
-    #         done = self.reached_top(next_state)
-    #         return next_state, self.get_reward(next_state), done, new_piece
-
-    #     if action: # אם היא חוקית
-    #         self.move(next_state, action) # מזיז את החלק
-    #     return next_state, self.get_reward(next_state), False, new_piece
-
-    
-    # def pieces_in_row(self, state, place):
-    #     temp_board = state.board.copy() # יצירת לוח זמני
-    #     temp_board[temp_board != 0] = 1 # החלפת כל המספרים שלא 0 ב1
-    #     row_sums = np.sum(temp_board[place-1]) # מציאת הסכום של שורה
-    #     return row_sums
-    
-    # def count_holes(self, state):
-    #     row, col, piece = state.falling_piece # מציאת מיקום וצורת החלק
-    #     rows, cols = piece.shape # מציאת אורך ורוחב החלק
-    #     count = 0
-
-    #     for i in range(col, cols-1):
-    #         column = state.board[:, i]
-    #         for j in range (row, ROWS-1):
-    #             if column[j] == 0:
-    #                 count += 1
-        
-    #     return count
-    
-    # def holes_reward(self, state):
-    #     count = self.count_holes(state)
-    #     return count * (-0.05)
-
-
-        

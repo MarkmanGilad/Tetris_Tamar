@@ -32,6 +32,7 @@ class DQN_Agent:
             if rnd < epsilon:
                 return random.choice(actions)
         
+        
         with torch.no_grad():
             Q_values = self.DQN(state)
         return torch.argmax(Q_values)
