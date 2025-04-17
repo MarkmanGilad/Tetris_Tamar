@@ -35,17 +35,6 @@ class Environment():
         state.next_piece = random.randint(1, 7) # בוחר חלק הבא חדש
         # state.next_piece = 4
 
-    # def add_piece(self, state): # הוספת החלק ללוח  
-    #     row, col, piece = state.falling_piece # מוצא את מיקום וצורת החלק
-    #     rows, cols = piece.shape # מוצא את אורך ורוחב החלק
-    #     state.board[row:row+rows, col:col+cols] += piece # מוסיף את החלק במקום המתאים על הלוח
-
-    # def del_piece(self, state): # מחיקת חלק מהלוח
-    #     row, col, piece = state.falling_piece #מוצא את מיקום וצורת החלק
-    #     erase = piece==0 # מוצא את כל הריבועים הריקים מסביב לצורה
-    #     rows, cols = erase.shape # מוצא את אורך ורוחב המערך 
-    #     state.board[row:row+rows, col:col+cols] *= erase # מכפיל את החלק במערך של המחיקה, כך שאיפה שלא היה 0 עכשיו יוכפל ב0 ויימחק
-
     def down_piece (self, state): # הורדת שורה
         state.down() #החלק יורד שורה
 
@@ -120,7 +109,6 @@ class Environment():
                 line_clear = pygame.mixer.Sound('sounds/line_clear.mp3') # ניגון צליל
                 line_clear.play()
 
-
     def update_score(self, state, num): # עדכון הניקוד
         if num == 1:
             state.score += 40
@@ -134,7 +122,6 @@ class Environment():
         elif num == 4:
             state.score += 1200
             self.reward += 20
-        
 
     def get_reward(self, state):
         if self.reached_top(state):
@@ -191,6 +178,8 @@ class Environment():
             self.select_falling_piece(next_state)
         return next_state
 
+    def all_next_state (self, state):
+        
 
     def next_state(self, state, action): #לדאוג שהפרס תואם - לא נותן פעמיים פרס על שורה למטה, נותן פרס על הורדת שורה בנקסט סטייט
         next_state = state.copy()
