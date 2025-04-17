@@ -32,33 +32,30 @@ class Environment():
         falling_piece_shape = self.pieces()[falling_piece_id] # שומר את הצורה של החלק הנבחר
         falling_piece_col = COLS // 2 - len(falling_piece_shape[0]) // 2 #ממקם אותו באמצע השורה העליונה
         state.falling_piece = 0, falling_piece_col, falling_piece_shape # ממקם את החלק על הלוח
-        # state.next_piece = random.randint(1, 7) # בוחר חלק הבא חדש
-        state.next_piece = 4
+        state.next_piece = random.randint(1, 7) # בוחר חלק הבא חדש
+        # state.next_piece = 4
 
-    def add_piece(self, state): # הוספת החלק ללוח  
-        row, col, piece = state.falling_piece # מוצא את מיקום וצורת החלק
-        rows, cols = piece.shape # מוצא את אורך ורוחב החלק
-        state.board[row:row+rows, col:col+cols] += piece # מוסיף את החלק במקום המתאים על הלוח
+    # def add_piece(self, state): # הוספת החלק ללוח  
+    #     row, col, piece = state.falling_piece # מוצא את מיקום וצורת החלק
+    #     rows, cols = piece.shape # מוצא את אורך ורוחב החלק
+    #     state.board[row:row+rows, col:col+cols] += piece # מוסיף את החלק במקום המתאים על הלוח
 
-    def del_piece(self, state): # מחיקת חלק מהלוח
-        row, col, piece = state.falling_piece #מוצא את מיקום וצורת החלק
-        erase = piece==0 # מוצא את כל הריבועים הריקים מסביב לצורה
-        rows, cols = erase.shape # מוצא את אורך ורוחב המערך 
-        state.board[row:row+rows, col:col+cols] *= erase # מכפיל את החלק במערך של המחיקה, כך שאיפה שלא היה 0 עכשיו יוכפל ב0 ויימחק
+    # def del_piece(self, state): # מחיקת חלק מהלוח
+    #     row, col, piece = state.falling_piece #מוצא את מיקום וצורת החלק
+    #     erase = piece==0 # מוצא את כל הריבועים הריקים מסביב לצורה
+    #     rows, cols = erase.shape # מוצא את אורך ורוחב המערך 
+    #     state.board[row:row+rows, col:col+cols] *= erase # מכפיל את החלק במערך של המחיקה, כך שאיפה שלא היה 0 עכשיו יוכפל ב0 ויימחק
 
     def down_piece (self, state): # הורדת שורה
-        self.del_piece(state)
         state.down() #החלק יורד שורה
-        self.add_piece(state)
 
     def move (self, state, action): # הזזת החלק
         row, col, piece = state.falling_piece
 
+        if action == 0:
+            return # לא קורה כלום
         if not self.no_move(state, action):
-            self.del_piece(state) #מחיקת החלק מהלוח
-            if action == 0:
-                pass # לא קורה כלום
-            elif action == 1:
+            if action == 1:
                 state.falling_piece = row, col - 1, piece # הזזה שמאלה
             elif action == 2:
                 state.falling_piece = row, col + 1, piece # הזזה ימינה
@@ -68,8 +65,6 @@ class Environment():
                 state.fall_speed = 4 # הגדלת מהירות הנפילה
             elif action == 5:
                 state.fall_speed = state.FALL_SPEED #החזרת מהיות הנפילה לרגיל
-
-            self.add_piece(state) # הוספת החלק חזרה ללוח
 
     def no_move(self, state, action): # בודק אם ,תזוזה אפשרית 
         row, col, piece = state.falling_piece
@@ -94,9 +89,8 @@ class Environment():
         if row + rows + dRow > ROWS or col + cols + dCol > COLS or col + dCol < 0: # אם יגיע לרצפה או לאחד הצדדים 
             return True
         # check if will collide
-        self.del_piece(state)
         result = (state.board[row+dRow:row+rows+dRow, col+dCol:col+cols+dCol] * piece).sum() # בודק אם במקרה של הזזה סכום מכפלת האזור בלוח והחלק עצמו יהיה גדול מאפס
-        self.add_piece(state)
+        
         if result > 0: # אם כן זאת אומרת שכבר יש שם חלק
             return True
         else:
@@ -170,6 +164,34 @@ class Environment():
             ], dtype=np.float32)
         return state, dqn_state
     
+    def next_state2(self, state, action):
+        '''
+        a. copy state
+        a. take action
+        b. if not legal go back
+        c. if not landed after action:
+            go down
+        d. if landed:
+            add piece to state
+            clear rows
+            get new piece
+        '''
+        next_state = state.copy()
+        if action: # אם היא חוקית
+            self.move(next_state, action) # מזיז את החלק
+
+        if self.is_collision(next_state, falling_piece=next_state.falling_piece):
+            next_state.falling_piece = state.copy_falling_piece()               # delete move
+        
+        if not self.landed(next_state):       # landed
+            next_state.down()
+        if self.landed():
+            next_state.add_piece()
+            self.clear_rows(next_state)
+            self.select_falling_piece(next_state)
+        return next_state
+
+
     def next_state(self, state, action): #לדאוג שהפרס תואם - לא נותן פעמיים פרס על שורה למטה, נותן פרס על הורדת שורה בנקסט סטייט
         next_state = state.copy()
         row, col, piece = next_state.falling_piece # מציאת מיקום וצורת החלק
@@ -210,6 +232,8 @@ class Environment():
 
         return next_state, next_dqn_state, self.get_reward(next_state), done, new_piece
     
+    def landed (self, state):
+        return self.is_collision(state, state.falling_piece, drow=1)
 
     def highest_piece_in_cols(self, state):
         highest_board = np.full((1, COLS), ROWS, dtype=int)

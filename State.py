@@ -5,23 +5,13 @@ import torch
 
 class State:
     def __init__(self, board=None, falling_piece=None, next_piece=None):
-        if board is not None:
-            self.board = board
-        else:
-            self.board = self.init_board()
+        self.board = self.init_board()
         self.end_of_game = False
         self.score = 0
         self.FALL_SPEED = 20
         self.fall_speed = self.FALL_SPEED
-        if falling_piece == None:
-            self.falling_piece = None #(row, col, piece)
-        else:
-             self.falling_piece = falling_piece
-        if next_piece == None:
-            self.next_piece = 4
-            # self.next_piece = random.randint(1, 7) # בוחר מה יהיה החלק הבא
-        else:
-             self.next_piece = next_piece
+        self.falling_piece = None #(row, col, piece)
+        self.next_piece = 4
     
     def init_board(self): # אתחול הלוח
             board = np.zeros((ROWS, COLS), dtype=int) # לוח מלא ב0
@@ -53,10 +43,36 @@ class State:
 
         return tensor.view(1, -1)    
     
+    def board_bin (self): # הופך ללוח בינארי
+        return (self.board !=0).astype(int)
+        
+    def get_board_w_piece(self): # הוספת החלק ללוח  
+        board = np.copy(self.board)
+        row, col, piece = self.falling_piece # מוצא את מיקום וצורת החלק
+        rows, cols = piece.shape # מוצא את אורך ורוחב החלק
+        board[row:row+rows, col:col+cols] += piece # מוסיף את החלק במקום המתאים על הלוח
+        return board
+    
+    def add_piece (self):
+        row, col, piece = self.falling_piece # מוצא את מיקום וצורת החלק
+        rows, cols = piece.shape # מוצא את אורך ורוחב החלק
+        self.board[row:row+rows, col:col+cols] += piece # מוסיף את החלק במקום המתאים על הלוח
+        self.falling_piece = None # החלק כבר לא נופל
+
+    def state_w_piece (self):
+         state = self.copy()
+         state.board = self.get_board_w_piece()
+         return state
+    
+    def copy_falling_piece(self):
+         row, col, piece = self.falling_piece
+         new_fallingPiece = (row, col, piece.copy())   # Gilad
+         return new_fallingPiece
+
     def copy (self):
          newBoard = np.copy(self.board)
          row, col, piece = self.falling_piece
-         new_fallingPiece = (row, col, piece)
+         new_fallingPiece = (row, col, piece.copy())   # Gilad
          new_nextPiece = self.next_piece
 
          return State(board=newBoard, falling_piece=new_fallingPiece, next_piece=new_nextPiece)

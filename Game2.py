@@ -37,7 +37,6 @@ while waiting: # במצב של סוף המשחק
 def main():
     env.select_falling_piece(state) # בוחר חלק ראשון
     step = 0
-    env.add_piece(state) # מוסיף את החלק ללוח
     graphics.draw(state=state) # מצייר את הלוח
     pygame.display.update()
     run = True
@@ -67,9 +66,9 @@ def main():
             if not env.is_collision(state, falling_piece=state.falling_piece, dRow=1):
                 env.down_piece(state)    # יורד שורה
             else:
+                state.add_piece()
                 env.clear_rows(state) # מוחק שורות אם צריך  
                 env.select_falling_piece(state) #אתחול המשתנים
-                env.add_piece(state) # הוספת החלק החדש ללוח
         
         action = player.get_Action(state, events, step) # מקבל את הפעולה שנבחרה
 

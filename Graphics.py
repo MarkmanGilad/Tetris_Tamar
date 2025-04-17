@@ -48,11 +48,12 @@ class Graphics:
         pygame.display.set_caption('TETRIS')
     
     def draw(self, state):
+        state_w_piece = state.state_w_piece()
         self.header_surf.fill(BLACK)
         self.main_surf.fill(LIGHTGRAY)
-        self.draw_score(state=state)
-        self.draw_next_piece(state=state)
-        self.draw_pieces(state=state)
+        self.draw_score(state=state_w_piece)
+        self.draw_next_piece(state=state_w_piece)
+        self.draw_pieces(state=state_w_piece)
         self.draw_Lines()
 
         self.screen.blit(self.header_surf, (0,0))

@@ -1,0 +1,22 @@
+epoch: 1   moves: 224
+c:\Users\Gilad\Markman Dropbox\Gilad Markman\Python\Tetris_Tamar\ReplayBuffer.py:16: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  self.buffer.append((torch.from_numpy(state), torch.tensor(action, dtype=torch.float32), torch.tensor(reward, dtype=torch.float32), torch.from_numpy(next_state), torch.tensor(done, dtype=int)))
+Traceback (most recent call last):
+  File "c:\Users\Gilad\Markman Dropbox\Gilad Markman\Python\Tetris_Tamar\Trainer.py", line 116, in <module>
+    main()
+  File "c:\Users\Gilad\Markman Dropbox\Gilad Markman\Python\Tetris_Tamar\Trainer.py", line 96, in main
+    player.save_param(path)
+  File "c:\Users\Gilad\Markman Dropbox\Gilad Markman\Python\Tetris_Tamar\DQN_Agent.py", line 62, in save_param
+    self.DQN.save_params(path)
+  File "c:\Users\Gilad\Markman Dropbox\Gilad Markman\Python\Tetris_Tamar\DQN.py", line 49, in save_params
+    torch.save(self.state_dict(), path)
+  File "C:\Users\Gilad\.virtualenvs\Space_Invaders-WdsSLu6i\Lib\site-packages\torch\serialization.py", line 849, in save
+    with _open_zipfile_writer(f) as opened_zipfile:
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gilad\.virtualenvs\Space_Invaders-WdsSLu6i\Lib\site-packages\torch\serialization.py", line 716, in _open_zipfile_writer
+    return container(name_or_buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Gilad\.virtualenvs\Space_Invaders-WdsSLu6i\Lib\site-packages\torch\serialization.py", line 687, in __init__
+    super().__init__(torch._C.PyTorchFileWriter(self.name))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Parent directory Data does not exist.
