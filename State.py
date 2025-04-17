@@ -4,14 +4,14 @@ import random
 import torch
 
 class State:
-    def __init__(self, board=None, falling_piece=None, next_piece=None):
+    def __init__(self, board=None, falling_piece=None, next_piece=4):
         self.board = self.init_board()
         self.end_of_game = False
         self.score = 0
         self.FALL_SPEED = 20
         self.fall_speed = self.FALL_SPEED
-        self.falling_piece = None #(row, col, piece)
-        self.next_piece = 4
+        self.falling_piece = falling_piece #(row, col, piece)
+        self.next_piece = next_piece
     
     def init_board(self): # אתחול הלוח
             board = np.zeros((ROWS, COLS), dtype=int) # לוח מלא ב0
@@ -76,3 +76,6 @@ class State:
          new_nextPiece = self.next_piece
 
          return State(board=newBoard, falling_piece=new_fallingPiece, next_piece=new_nextPiece)
+    
+    def __repr__(self):
+         return str(self.board)

@@ -178,9 +178,6 @@ class Environment():
             self.select_falling_piece(next_state)
         return next_state
 
-    def all_next_state (self, state):
-        
-
     def next_state(self, state, action): #לדאוג שהפרס תואם - לא נותן פעמיים פרס על שורה למטה, נותן פרס על הורדת שורה בנקסט סטייט
         next_state = state.copy()
         row, col, piece = next_state.falling_piece # מציאת מיקום וצורת החלק
@@ -222,7 +219,7 @@ class Environment():
         return next_state, next_dqn_state, self.get_reward(next_state), done, new_piece
     
     def landed (self, state):
-        return self.is_collision(state, state.falling_piece, drow=1)
+        return self.is_collision(state, state.falling_piece, dRow=1)
 
     def highest_piece_in_cols(self, state):
         highest_board = np.full((1, COLS), ROWS, dtype=int)
@@ -271,7 +268,6 @@ class Environment():
             wells += highest_board[0, COLS -1] - highest_board[0, COLS - 2]
 
         return wells
-    
 
     def bumpiness(self, state):
         highest_board = self.highest_piece_in_cols(state)
@@ -295,7 +291,42 @@ class Environment():
 
         return len(full_rows)
               
-    
+    def drop_piece (self, state):
+        state = state.copy()
+        while not self.landed(state):
+            state.down()
+        return state            
+            
+    def all_states (self, state):
+        states = []
+        actions = []
+        row, col, piece = state.falling_piece
+        width = piece.shape[1]
+        piece_num = piece.max()
+        if piece_num in (4,):
+            rotate_num = 1
+        elif piece_num in (1, 5, 7):
+            rotate_num = 2
+        elif piece_num in (2, 3, 6):
+            rotate_num = 4
+
+        for rotate in range(rotate_num):
+            next_state = state.copy()
+            for i in range(rotate):
+                self.move(next_state, action=3)
+            
+            for new_col in range(11-width):
+                for i in range(new_col):
+                    next_state.falling_piece[1] = i
+
+                next_state = self.drop_piece(next_state)
+                states.append(next_state.get_board_w_piece)
+                actions.append((rotate, new_col))
+
+        return states, actions
+
+
+
     
 
     
