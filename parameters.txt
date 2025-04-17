@@ -1,0 +1,898 @@
+1
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 128
+layer2 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.99
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_1.pth"
+replay_path = "Data\Replay_1.pth"
+bottom_collision_reward=0.02
+down_piece_reward=0.005
+end_reward=-5
+all squares, 8 to complete row
+
+
+
+2
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.99
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_2.pth"
+replay_path = "Data\Replay_2.pth"
+bottom_collision_reward=0.02
+down_piece_reward=0.005
+end_reward=-5
+all squares, 8 to complete row
+
+
+
+3
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.99
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_3.pth"
+replay_path = "Data\Replay_3.pth"
+bottom_collision_reward=0.02
+down_piece_reward=0.005
+end_reward=-5
+reward = -reward
+all squares, 8 to complete row
+
+
+
+4
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.99
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_4.pth"
+replay_path = "Data\Replay_4.pth"
+bottom_collision_reward=0.02
+down_piece_reward=0.005
+end_reward=-5
+all squares, 8 to complete row
+Train = True
+
+
+5
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_5.pth"
+replay_path = "Data\Replay_5.pth"
+bottom_collision_reward=0.02
+down_piece_reward=0.005
+end_reward=-5
+all squares, 8 to complete row
+Train = True
+
+
+
+7
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_7.pth"
+replay_path = "Data\Replay_7.pth"
+down_piece_reward=0.005
+collision_reward = (row + rows) / 1000
+end_reward=-5
+all squares, 8 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.04
+elif num == 2:
+        state.score += 100
+        self.reward += 1
+elif num == 3:
+        state.score += 300
+        self.reward += 3
+elif num == 4:
+        state.score += 1200
+        self.reward += 12
+
+
+8
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_8.pth"
+replay_path = "Data\Replay_8.pth"
+down_piece_reward=0.005
+collision_reward = (row + rows) / 1000
+end_reward=-5
+all squares, 8 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+
+9
+epsilon_start = 1
+epsilon_final = 0.01
+epsilon_decay = 5000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 256
+layer2 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.01
+path = "Data\DQN_PARAM_9.pth"
+replay_path = "Data\Replay_9.pth"
+down_piece_reward=0.005
+collision_reward = (row + rows) / 1000
+end_reward=-5
+all squares, 8 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+
+12
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 50000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 256
+layer2 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.001
+path = "Data\DQN_PARAM_12.pth"
+replay_path = "Data\Replay_12.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+13
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 50000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.001
+path = "Data\DQN_PARAM_13.pth"
+replay_path = "Data\Replay_13.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+14
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 50000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.001
+path = "Data\DQN_PARAM_13.pth"
+replay_path = "Data\Replay_13.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+15
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 50000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 50000
+C = 30
+batch = 64
+learning_rate = 0.001
+path = "Data\DQN_PARAM_13.pth"
+replay_path = "Data\Replay_13.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+
+19
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 50000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_13.pth"
+replay_path = "Data\Replay_13.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+20
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 50000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_13.pth"
+replay_path = "Data\Replay_13.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+
+
+21
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 50000
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_22.pth"
+replay_path = "Data\Replay_22.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+NO SOFTMAX
+
+
+23
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_22.pth"
+replay_path = "Data\Replay_22.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+NO SOFTMAX
+UPATED DECAY
+
+
+24
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_22.pth"
+replay_path = "Data\Replay_22.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+NO SOFTMAX
+UPATED DECAY
+CONVOLUTION
+
+
+28
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_22.pth"
+replay_path = "Data\Replay_22.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+    state.score += 40
+    self.reward += 0.08
+elif num == 2:
+        state.score += 100
+        self.reward += 2
+elif num == 3:
+        state.score += 300
+        self.reward += 6
+elif num == 4:
+        state.score += 1200
+        self.reward += 20
+NO SOFTMAX
+UPATED DECAY
+CONVOLUTION
+
+
+29
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 220 # board (10 * 20) + falling piece (1 + 1 + 4 * 4) + fall_speed (1) + next_piece (1) = 220
+layer1 = 512
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_22.pth"
+replay_path = "Data\Replay_22.pth"
+collision_reward = ((row + rows) * (row_sums**2)) / 1000
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+            state.score += 40
+            self.reward += 0.5
+        elif num == 2:
+            state.score += 100
+            self.reward += 1
+        elif num == 3:
+            state.score += 300
+            self.reward += 3
+        elif num == 4:
+            state.score += 1200
+            self.reward += 10
+
+rewards:
+self.reward += ((row_sums**2)*row) / 1000 #הוספת מכפלה במספר השורה
+self.reward += self.holes_reward(next_state) (-0.05 per hole)
+NO SOFTMAX
+UPATED DECAY
+CONVOLUTION
+
+
+
+############ DIFF STATE: ############
+
+36
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 7 # holes, landing height, wells, bumpiness, total height, full rows, done
+layer1 = 128
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_36.pth"
+replay_path = "Data\Replay_36.pth"
+end_reward=-5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+            state.score += 40
+            self.reward += 0.4
+        elif num == 2:
+            state.score += 100
+            self.reward += 1
+        elif num == 3:
+            state.score += 300
+            self.reward += 3
+        elif num == 4:
+            state.score += 1200
+            self.reward += 12
+
+NO SOFTMAX
+UPATED DECAY
+
+
+
+37
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 7 # holes, landing height, wells, bumpiness, total height, full rows, done
+layer1 = 128
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_36.pth"
+replay_path = "Data\Replay_36.pth"
+end_reward=-5
+else not end += 0.01
+all squares, 10 to complete row
+Train = True
+if num == 1:
+            state.score += 40
+            self.reward += 0.4
+        elif num == 2:
+            state.score += 100
+            self.reward += 1
+        elif num == 3:
+            state.score += 300
+            self.reward += 3
+        elif num == 4:
+            state.score += 1200
+            self.reward += 12
+
+self.reward -= 0.01*count_holes ########################
+if landing_row < 10:
+        self.reward -= 0.1 ###########################
+elif landing_row > 15:
+        self.reward += 0.1 ###########################
+
+
+NO SOFTMAX
+UPATED DECAY
+
+
+
+38
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 7 # holes, landing height, wells, bumpiness, total height, full rows, done
+layer1 = 128
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_36.pth"
+replay_path = "Data\Replay_36.pth"
+end_reward=-10
+else not end += 1
+all squares, 10 to complete row
+Train = True
+if num == 1:
+            state.score += 40
+            self.reward += 0.4
+        elif num == 2:
+            state.score += 100
+            self.reward += 1
+        elif num == 3:
+            state.score += 300
+            self.reward += 3
+        elif num == 4:
+            state.score += 1200
+            self.reward += 12
+
+self.reward -= 0.1*count_holes ########################
+if landing_row < 10:
+        self.reward -= 1 ###########################
+elif landing_row > 15:
+        self.reward += 1 ###########################
+
+
+NO SOFTMAX
+UPATED DECAY
+
+
+39
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 7 # holes, landing height, wells, bumpiness, total height, full rows, done
+layer1 = 128
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_36.pth"
+replay_path = "Data\Replay_36.pth"
+end_reward=-10
+else not end += 0.05
+all squares, 10 to complete row
+Train = True
+if num == 1:
+            state.score += 40
+            self.reward += 0.6
+        elif num == 2:
+            state.score += 100
+            self.reward += 2
+        elif num == 3:
+            state.score += 300
+            self.reward += 6
+        elif num == 4:
+            state.score += 1200
+            self.reward += 20
+
+self.reward -= 0.1*count_holes ########################
+if landing_row < 10:
+        self.reward -= 1 ###########################
+elif landing_row > 15:
+        self.reward += 1 ###########################
+
+
+NO SOFTMAX
+UPATED DECAY
+
+
+
+40
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 7 # holes, landing height, wells, bumpiness, total height, full rows, done
+layer1 = 128
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_36.pth"
+replay_path = "Data\Replay_36.pth"
+end_reward=-10
+else not end += 0.5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+            state.score += 40
+            self.reward += 0.6
+        elif num == 2:
+            state.score += 100
+            self.reward += 2
+        elif num == 3:
+            state.score += 300
+            self.reward += 6
+        elif num == 4:
+            state.score += 1200
+            self.reward += 20
+
+
+NO SOFTMAX
+UPATED DECAY
+
+
+41
+epsilon_start = 1
+epsilon_final = 0.1
+epsilon_decay = 300
+input_size = 7 # holes, landing height, wells, bumpiness, total height, full rows, done
+layer1 = 128
+layer2 = 256
+layer3 = 64
+leaky_relu
+output_size = 4 # Q(state)-> 4 values of stay, left, right, rotate
+gamma = 0.95
+epochs = 300000
+C = 30
+batch = 64
+buffer = 1000
+learning_rate = 0.0001
+path = "Data\DQN_PARAM_36.pth"
+replay_path = "Data\Replay_36.pth"
+end_reward=-10
+added piece += 0.5
+all squares, 10 to complete row
+Train = True
+if num == 1:
+            state.score += 40
+            self.reward += 0.6
+        elif num == 2:
+            state.score += 100
+            self.reward += 2
+        elif num == 3:
+            state.score += 300
+            self.reward += 6
+        elif num == 4:
+            state.score += 1200
+            self.reward += 20
+
+
+NO SOFTMAX
+UPATED DECAY
