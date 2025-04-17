@@ -92,6 +92,10 @@ class Environment():
             return True # מחזיר אמת - הגיע עד למעלה
         return False
     
+    def is_done(self, state):
+        row, _, _ = state.falling_piece
+        return row == 0
+
     def clear_rows(self, state): # מחיקת שורות מלאות מהלוח
         temp_board = state.board.copy() # יצירת לוח זמני
         temp_board[temp_board != 0] = 1 # החלפת כל המספרים שלא 0 ב1
@@ -108,6 +112,7 @@ class Environment():
             if not self.train:
                 line_clear = pygame.mixer.Sound('sounds/line_clear.mp3') # ניגון צליל
                 line_clear.play()
+        return len(full_rows)
 
     def update_score(self, state, num): # עדכון הניקוד
         if num == 1:
@@ -151,7 +156,7 @@ class Environment():
             ], dtype=np.float32)
         return state, dqn_state
     
-    def next_state2(self, state, action):
+    def next_state(self, state, action):
         '''
         a. copy state
         a. take action
@@ -172,7 +177,7 @@ class Environment():
         
         if not self.landed(next_state):       # landed
             next_state.down()
-        if self.landed():
+        else:
             next_state.add_piece()
             self.clear_rows(next_state)
             self.select_falling_piece(next_state)
@@ -310,6 +315,7 @@ class Environment():
         states = []
         states_dqn = []
         actions = []
+        cleared_rows = []
         _, _, piece = state.falling_piece
        
         piece_num = piece.max()
@@ -332,13 +338,13 @@ class Environment():
                 next_state.falling_piece = row, col, piece
 
                 next_state = self.drop_piece(next_state)
-                # full_rows = self.count_full_rows(next_state)
-                # landing = self.landing_height(next_state)
-                # done = next_state.falling_piece[0] == 0
+                cleared = self.clear_rows(next_state)
+
                 state_dqn = self.to_DQN_state(next_state)
                 states_dqn.append(state_dqn)
                 states.append(next_state.get_board_w_piece())
                 actions.append((rotate, new_col))
+                cleared_rows.append(cleared)
 
-        return states, states_dqn, actions
+        return states, states_dqn, actions, cleared_rows
 

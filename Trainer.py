@@ -21,18 +21,18 @@ path = f"Data\DQN_PARAM_{num}.pth"
 replay_path = f"Data\Replay_{num}.pth"
 best_path = f"Data\DQN_PARAM_BEST{num}.pth"
 
-wandb.init(
-    project = "Tetris",
-    id = f"Tetris{num}",
+# wandb.init(
+#     project = "Tetris",
+#     id = f"Tetris{num}",
 
-    config={
-        "name": f"Tetris{num}",
-        "learning_rate": learning_rate,
-        "epochs": epochs,
-        "batch": batch,
-        "C": C,
-    }
-)
+#     config={
+#         "name": f"Tetris{num}",
+#         "learning_rate": learning_rate,
+#         "epochs": epochs,
+#         "batch": batch,
+#         "C": C,
+#     }
+# )
 
 
 def main ():
@@ -52,7 +52,7 @@ def main ():
     avg_score = 0
     best_score = 0
     for epoch in range(epochs):
-        state, dqn_state = env.newState()
+        state = env.state
         done = False
         moves = 0    
         score = 0
@@ -61,21 +61,19 @@ def main ():
             graphics.draw(state=state) # מצייר את הלוח 
             pygame.display.update()
             pygame.event.pump()
-            action = player.get_Action(torch.from_numpy(dqn_state), epoch=epoch, train=True)
+            action, cleared_rows = player.get_Action(state, epoch=epoch, train=True)
+            reward = cleared_rows*10
             moves += 1
             print(f'epoch: {epoch}   moves: {moves}', end="\r")
-            next_state, next_dqn_state, reward, done, new_piece = env.next_state(state, action)
-            if new_piece:
-                new_pieces += 1
-            # done = env.reached_top(next_state)
+            next_state = env.next_state(state, action)
+            new_pieces += 1
+            done = env.is_done(next_state)
             score += next_state.score
 
-            replay.push(dqn_state, action, reward, next_dqn_state, done)
+            # replay.push(state, action, reward, next_state, done)
             state = next_state  # env.move
-            dqn_state = next_dqn_state
-            # state.score += score
 
-            if len(replay) < 1000:
+            if len(replay) < 1000000:
                 continue
             dqn_states, actions, rewards, next_dqn_states, dones = replay.sample(batch)
             Q_values = Q(dqn_states, actions)
@@ -93,8 +91,8 @@ def main ():
             player_hat.DQN.load_state_dict(player.DQN.state_dict())
 
         if epoch!=0 and epoch%1 == 0:
-            player.save_param(path)
-            wandb.log({"score": score, "loss": loss, "new pieces": new_pieces})
+            # player.save_param(path)
+            # wandb.log({"score": score, "loss": loss, "new pieces": new_pieces})
             # wandb.log({"loss": loss})
             # wandb.log({"new pieces": new_pieces})
             avg_score += score
@@ -105,7 +103,7 @@ def main ():
             avg_score = avg_score/100
             if avg_score > best_score:
                 best_score = avg_score
-                player.save_param(best_path)
+                # player.save_param(best_path)
             avg_score = 0
 
 

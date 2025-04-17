@@ -8,11 +8,12 @@ def all_states():
     env = Environment(state=state)
     env.select_falling_piece(state)
     env.select_falling_piece(state)
-    states, states_dqn, actions = env.all_states(state)
+    states, states_dqn, actions, cleared_rows = env.all_states(state)
 
     print(states)
     print(states_dqn)
     print(actions)
+    print(cleared_rows)
 
 def pieces_test():
     pieces = {

@@ -15,6 +15,7 @@ class DQN_Agent:
         if parametes_path:
             self.DQN.load_params(parametes_path)
         self.train = train
+        self.env = env
         self.setTrainMode()
 
     def setTrainMode (self):
@@ -23,19 +24,45 @@ class DQN_Agent:
           else:
               self.DQN.eval()
 
+    def direction(self, col, new_col):
+        if new_col > col:
+            return 2 # right
+        elif new_col < col:
+            return 1 # left
+        return 0 # stay
+        
+
     def get_Action (self, state, epoch = 0, events= None, train = False) -> tuple:
         # state = state.toTensor()
-        actions = [0,1,2,3]
+        _, col, _ = state.falling_piece
+        _, states_dqn, actions, cleared_rows = self.env.all_states(state) 
+        
         if self.train and train:
             epsilon = self.epsilon_greedy(epoch)
             rnd = random.random()
             if rnd < epsilon:
-                return random.choice(actions)
+                idx = random.randrange(len(actions))
+                rotate, new_col = actions[idx]
+                cleared_row = cleared_rows[idx]
+                if rotate == 0:
+                    return self.direction(col, new_col), cleared_row
+                return 3, cleared_row # rotate
+                        
         
-        
+        # Convert to a NumPy array first
+        np_batch = np.stack(states_dqn)  # shape: [actions, 10]
+
+        # Then convert to PyTorch tensor
+        tensor_batch = torch.from_numpy(np_batch).to(dtype=torch.float32)
+
         with torch.no_grad():
-            Q_values = self.DQN(state)
-        return torch.argmax(Q_values)
+            Q_values = self.DQN(tensor_batch)
+        max_index = torch.argmax(Q_values)
+        rotate, new_col = actions[max_index]
+        cleared_row = cleared_rows[max_index]
+        if rotate == 0:
+            return self.direction(col, new_col), cleared_row
+        return 3, cleared_row # rotate
 
     def get_Actions_Values (self, states):
         with torch.no_grad():
