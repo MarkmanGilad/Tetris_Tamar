@@ -6,8 +6,6 @@ from State import State
 def all_states():
     state = State()
     env = Environment(state=state)
-    env.select_falling_piece(state)
-    env.select_falling_piece(state)
     states, states_dqn, actions, cleared_rows = env.all_states(state)
 
     print(states)

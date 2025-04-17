@@ -93,8 +93,8 @@ class Environment():
         return False
     
     def is_done(self, state):
-        row, _, _ = state.falling_piece
-        return row == 0
+        heights = self.columns_heights(state)
+        return 20 in heights
 
     def clear_rows(self, state): # מחיקת שורות מלאות מהלוח
         temp_board = state.board.copy() # יצירת לוח זמני
@@ -177,7 +177,7 @@ class Environment():
         
         if not self.landed(next_state):       # landed
             next_state.down()
-        else:
+        if self.landed(next_state):     # check again after down
             next_state.add_piece()
             self.clear_rows(next_state)
             self.select_falling_piece(next_state)
@@ -289,7 +289,7 @@ class Environment():
         return bumps
 
     def columns_heights (self, state):
-        board = state.get_board_w_piece()
+        board = state.board
         nonzero_mask = board != 0
         # use argmax on the mask — it returns the first True in each column
         # for columns with no non-zero values, this will return 0, so we must handle that
@@ -309,6 +309,8 @@ class Environment():
         state = state.copy()
         while not self.landed(state):
             state.down()
+        state.add_piece()
+        self.select_falling_piece(state)
         return state            
             
     def all_states (self, state):
@@ -327,12 +329,13 @@ class Environment():
             rotate_num = 4
 
         for rotate in range(rotate_num):
-            next_state = state.copy()
+            state2 = state.copy()
             for i in range(rotate):
-                self.move(next_state, action=3)
+                self.move(state2, action=3)
             
-            width = next_state.falling_piece[2].shape[1]
-            for new_col in range(11-width):
+            width = state2.falling_piece[2].shape[1]
+            for new_col in range(10-width):
+                next_state = state2.copy()
                 row, col, piece = next_state.falling_piece
                 col = new_col
                 next_state.falling_piece = row, col, piece
@@ -342,7 +345,7 @@ class Environment():
 
                 state_dqn = self.to_DQN_state(next_state)
                 states_dqn.append(state_dqn)
-                states.append(next_state.get_board_w_piece())
+                states.append(next_state)
                 actions.append((rotate, new_col))
                 cleared_rows.append(cleared)
 

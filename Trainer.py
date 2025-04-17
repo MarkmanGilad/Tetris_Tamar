@@ -70,7 +70,7 @@ def main ():
             done = env.is_done(next_state)
             score += next_state.score
 
-            # replay.push(state, action, reward, next_state, done)
+            replay.push(state, action, reward, next_state, done)
             state = next_state  # env.move
 
             if len(replay) < 1000000:
