@@ -3,10 +3,28 @@ import numpy as np
 from Environment import Environment
 from State import State
 
-state = State()
-env = Environment(state=state)
-env.select_falling_piece(state)
-states, actions = env.all_states(state)
+def all_states():
+    state = State()
+    env = Environment(state=state)
+    env.select_falling_piece(state)
+    env.select_falling_piece(state)
+    states, actions = env.all_states(state)
 
-print(states)
-print(actions)
+    print(states)
+    print(actions)
+
+def pieces_test():
+    pieces = {
+            1:np.array([[1, 1, 1, 1]]),
+            2:np.array([[2, 0, 0],[2, 2, 2]]),
+            3:np.array([[0, 0, 3],[3, 3, 3]]),
+            4:np.array([[4, 4],[4, 4]]),
+            5:np.array([[0, 5, 5],[5, 5, 0]]),
+            6:np.array([[0, 6, 0],[6, 6, 6]]),
+            7:np.array([[7, 7, 0],[0, 7, 7]])
+        }
+    for i in range(4):
+        print(np.rot90(pieces[3], k=i) )
+
+# pieces_test()
+all_states()

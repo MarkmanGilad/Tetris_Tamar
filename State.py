@@ -42,7 +42,7 @@ class State:
         tensor = torch.cat((tensor, tensor1, tensor2, tensor3))
 
         return tensor.view(1, -1)    
-    
+
     def board_bin (self): # הופך ללוח בינארי
         return (self.board !=0).astype(int)
         

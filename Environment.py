@@ -218,6 +218,19 @@ class Environment():
 
         return next_state, next_dqn_state, self.get_reward(next_state), done, new_piece
     
+    def to_DQN_state(self, state, landing, full_rows, done):
+        dqn_state = np.array([
+            self.count_holes(state),
+            landing,
+            self.wells(state),
+            self.bumpiness(state),
+            self.total_height(state),
+            full_rows,
+            done 
+        ], dtype=np.float32)
+
+        return dqn_state
+
     def landed (self, state):
         return self.is_collision(state, state.falling_piece, dRow=1)
 
@@ -300,8 +313,8 @@ class Environment():
     def all_states (self, state):
         states = []
         actions = []
-        row, col, piece = state.falling_piece
-        width = piece.shape[1]
+        _, _, piece = state.falling_piece
+       
         piece_num = piece.max()
         if piece_num in (4,):
             rotate_num = 1
@@ -315,12 +328,14 @@ class Environment():
             for i in range(rotate):
                 self.move(next_state, action=3)
             
+            width = next_state.falling_piece[2].shape[1]
             for new_col in range(11-width):
-                for i in range(new_col):
-                    next_state.falling_piece[1] = i
+                row, col, piece = next_state.falling_piece
+                col = new_col
+                next_state.falling_piece = row, col, piece
 
                 next_state = self.drop_piece(next_state)
-                states.append(next_state.get_board_w_piece)
+                states.append(next_state.get_board_w_piece())
                 actions.append((rotate, new_col))
 
         return states, actions
