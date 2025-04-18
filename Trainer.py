@@ -97,7 +97,7 @@ def main (chkpt):
 
         if epoch!=0 and epoch%1 == 0:
             # player.save_param(path)
-            # wandb.log({"score": score, "loss": loss, "new pieces": new_pieces})
+            wandb.log({"score": score, "loss": loss, "moves": moves, "new pieces": {new_pieces} })
             # wandb.log({"loss": loss})
             # wandb.log({"new pieces": new_pieces})
             avg_score += score
