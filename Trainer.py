@@ -102,7 +102,7 @@ def main (chkpt):
             # wandb.log({"new pieces": new_pieces})
             avg_score += score
             
-            print (f'epoch: {epoch} moves: {moves} loss: {loss:.7f}  score: {score}  new pieces: {new_pieces}')
+            print (f'chkpt: {num} epoch: {epoch} moves: {moves} loss: {loss:.7f}  score: {score}  new pieces: {new_pieces}')
 
         if epoch%100 == 0:
             avg_score = avg_score/100
