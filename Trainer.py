@@ -7,35 +7,37 @@ from ReplayBuffer import ReplayBuffer
 from State import *
 import torch 
 import wandb
+import os
 
 pygame.init()
 pygame.mixer.init()
 
-num = 41
-
-epochs = 300000
-C = 30
-batch = 64
-learning_rate = 0.0001
-path = f"Data\DQN_PARAM_{num}.pth"
-replay_path = f"Data\Replay_{num}.pth"
-best_path = f"Data\DQN_PARAM_BEST{num}.pth"
-
-# wandb.init(
-#     project = "Tetris",
-#     id = f"Tetris{num}",
-
-#     config={
-#         "name": f"Tetris{num}",
-#         "learning_rate": learning_rate,
-#         "epochs": epochs,
-#         "batch": batch,
-#         "C": C,
-#     }
-# )
 
 
-def main ():
+
+def main (chkpt):
+    num = chkpt
+
+    epochs = 300000
+    C = 30
+    batch = 64
+    learning_rate = 0.0001
+    path = f"Data\DQN_PARAM_{num}.pth"
+    replay_path = f"Data\Replay_{num}.pth"
+    best_path = f"Data\DQN_PARAM_BEST{num}.pth"
+
+    wandb.init(
+        project = "Tetris",
+        id = f"Tetris{num}",
+
+        config={
+            "name": f"Tetris{num}",
+            "learning_rate": learning_rate,
+            "epochs": epochs,
+            "batch": batch,
+            "C": C,
+        }
+    )
     state = State()
     env = Environment(state=state)
     graphics = Graphics()
@@ -61,25 +63,28 @@ def main ():
             graphics.draw(state=state) # מצייר את הלוח 
             pygame.display.update()
             pygame.event.pump()
-            action, cleared_rows = player.get_Action(state, epoch=epoch, train=True)
-            reward = cleared_rows*10
-            moves += 1
+            next_state, next_states_dqn, action, cleared_rows = player.get_Action(state, epoch=epoch, train=True)
+            reward = cleared_rows*10 + 1
+            moves += len(action)
             print(f'epoch: {epoch}   moves: {moves}', end="\r")
-            next_state = env.next_state(state, action)
             new_pieces += 1
             done = env.is_done(next_state)
             score += next_state.score
-
-            replay.push(state, action, reward, next_state, done)
+            if done:
+                reward -= 10
+            replay.push(state, action, reward, next_state, next_states_dqn, done)
             state = next_state  # env.move
 
-            if len(replay) < 1000000:
+            if len(replay) < 100:
                 continue
-            dqn_states, actions, rewards, next_dqn_states, dones = replay.sample(batch)
-            Q_values = Q(dqn_states, actions)
-            next_actions, Q_hat_Values = player_hat.get_Actions_Values(next_dqn_states)
+            
+            _, _, rewards, next_states, next_states_dqn_tensor, dones = replay.sample(batch)
+            Q_values = player.Q(next_states_dqn_tensor)   # Q(s,a) = Q(next_state)
+
+            next_next_states_dqn, _ = player.get_next_states_Values(next_states) # DDQN
+            
             with torch.no_grad():
-                Q_hat_Values = Q_hat(next_dqn_states, next_actions)
+                Q_hat_Values = player_hat.Q(next_next_states_dqn)
             
             loss = player.DQN.loss(Q_values, rewards, Q_hat_Values, dones)
             loss.backward()
@@ -111,4 +116,10 @@ def main ():
     torch.save(replay, replay_path)
 
 if __name__ == '__main__':
-    main()
+    if not os.path.exists("Data/checkpoit_num"):
+        torch.save(101, "Data/checkpoit_num")    
+    
+    chkpt = torch.load("Data/checkpoit_num", weights_only=False)
+    chkpt += 1
+    torch.save(chkpt, "Data/checkpoit_num")    
+    main (chkpt)

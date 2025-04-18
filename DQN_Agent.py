@@ -33,24 +33,18 @@ class DQN_Agent:
         
 
     def get_Action (self, state, epoch = 0, events= None, train = False) -> tuple:
-        # state = state.toTensor()
-        _, col, _ = state.falling_piece
-        _, states_dqn, actions, cleared_rows = self.env.all_states(state) 
+
+        next_states, next_states_dqn, actions, cleared_rows = self.env.all_states(state) 
         
         if self.train and train:
             epsilon = self.epsilon_greedy(epoch)
             rnd = random.random()
             if rnd < epsilon:
                 idx = random.randrange(len(actions))
-                rotate, new_col = actions[idx]
-                cleared_row = cleared_rows[idx]
-                if rotate == 0:
-                    return self.direction(col, new_col), cleared_row
-                return 3, cleared_row # rotate
-                        
-        
+                return next_states[idx], next_states_dqn[idx], actions[idx], cleared_rows[idx]
+                
         # Convert to a NumPy array first
-        np_batch = np.stack(states_dqn)  # shape: [actions, 10]
+        np_batch = np.stack(next_states_dqn)  # shape: [actions, 10]
 
         # Then convert to PyTorch tensor
         tensor_batch = torch.from_numpy(np_batch).to(dtype=torch.float32)
@@ -58,25 +52,32 @@ class DQN_Agent:
         with torch.no_grad():
             Q_values = self.DQN(tensor_batch)
         max_index = torch.argmax(Q_values)
-        rotate, new_col = actions[max_index]
-        cleared_row = cleared_rows[max_index]
-        if rotate == 0:
-            return self.direction(col, new_col), cleared_row
-        return 3, cleared_row # rotate
+        return next_states[max_index], next_states_dqn[max_index], actions[max_index], cleared_rows[max_index]
 
-    def get_Actions_Values (self, states):
-        with torch.no_grad():
-            Q_values = self.DQN(states)
-            max_values, max_indices = torch.max(Q_values,dim=1) # best_values, best_actions
+    def get_next_states_Values (self, states):
         
-        return max_indices.reshape(-1,1), max_values.reshape(-1,1)
+        states_dqn_lst, next_Q_values_lst = [], []
+        for state in states:
+            next_states, next_states_dqn, actions, cleared_rows = self.env.all_states(state) 
+            # Convert to a NumPy array first
+            np_batch = np.stack(next_states_dqn)  # shape: [actions, 10]
 
-    def Q (self, states, actions):
-        Q_values = self.DQN(states)
-        rows = torch.arange(Q_values.shape[0]).reshape(-1,1)
-        cols = actions.reshape(-1,1)
-        return Q_values[rows, cols]
+            # Then convert to PyTorch tensor
+            tensor_batch = torch.from_numpy(np_batch).to(dtype=torch.float32)
 
+            with torch.no_grad():
+                Q_values = self.DQN(tensor_batch)
+            max_index = torch.argmax(Q_values)
+            states_dqn_lst.append(next_states_dqn[max_index])
+            next_Q_values_lst.append(Q_values[max_index])
+
+        states_dqn_tensor = torch.from_numpy(np.stack(states_dqn_lst)).to(torch.float32)
+        next_Q_values_tensor = torch.vstack(next_Q_values_lst)
+        return states_dqn_tensor, next_Q_values_tensor 
+
+    def Q (self, states_dqn):
+        return self.DQN(states_dqn)
+        
     def epsilon_greedy(self,epoch, start = epsilon_start, final=epsilon_final, decay=epsilon_decay):
         # res = final + (start - final) * math.exp(-1 * epoch/decay)
         if epoch < decay:
@@ -94,12 +95,7 @@ class DQN_Agent:
 
     def __call__(self, events= None, state=None):
         return self.get_Action(state)
-    
-    def Q (self, states, actions):
-        Q_values = self.DQN(states) 
-        rows = torch.arange(Q_values.shape[0]).reshape(-1,1)
-        cols = actions.reshape(-1,1).to(torch.int)
-        return Q_values[rows, cols]
+        
 
     def get_end_Action(self, events=None):
         action = 6

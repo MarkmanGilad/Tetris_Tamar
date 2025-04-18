@@ -26,7 +26,8 @@ class Environment():
             7:np.array([[7, 7, 0],[0, 7, 7]])
         }
         return pieces
-    
+             
+
     def select_falling_piece(self, state): #בוחר חלק רנדומלי
         falling_piece_id = state.next_piece # לוקח את החלק שנבחר קודם
         falling_piece_shape = self.pieces()[falling_piece_id] # שומר את הצורה של החלק הנבחר
@@ -51,9 +52,7 @@ class Environment():
             elif action == 3:
                 state.falling_piece = row, col, np.rot90(piece, k=3) # סיבוב
             elif action == 4:
-                state.fall_speed = 4 # הגדלת מהירות הנפילה
-            elif action == 5:
-                state.fall_speed = state.FALL_SPEED #החזרת מהיות הנפילה לרגיל
+                state = self._drop_piece(state)
 
     def no_move(self, state, action): # בודק אם ,תזוזה אפשרית 
         row, col, piece = state.falling_piece
@@ -305,18 +304,22 @@ class Environment():
 
         return len(full_rows)
               
-    def drop_piece (self, state):
-        state = state.copy()
+    def drop_piece (self, state): #doesn't change the state/
+        new_state = state.copy()
+        self._drop_piece(new_state)
+        return new_state            
+
+    def _drop_piece(self, state):   # change the state
         while not self.landed(state):
             state.down()
         state.add_piece()
         self.select_falling_piece(state)
-        return state            
-            
+        
+
     def all_states (self, state):
-        states = []
-        states_dqn = []
+        next_states_dqn = []
         actions = []
+        next_states = []
         cleared_rows = []
         _, _, piece = state.falling_piece
        
@@ -329,25 +332,41 @@ class Environment():
             rotate_num = 4
 
         for rotate in range(rotate_num):
+            action = []
             state2 = state.copy()
             for i in range(rotate):
                 self.move(state2, action=3)
-            
+                action.append(3)
+
             width = state2.falling_piece[2].shape[1]
-            for new_col in range(10-width):
+            for new_col in range(11-width):
                 next_state = state2.copy()
                 row, col, piece = next_state.falling_piece
+                action += self.calc_steps(col, new_col)
                 col = new_col
                 next_state.falling_piece = row, col, piece
 
                 next_state = self.drop_piece(next_state)
                 cleared = self.clear_rows(next_state)
-
+                
                 state_dqn = self.to_DQN_state(next_state)
-                states_dqn.append(state_dqn)
-                states.append(next_state)
-                actions.append((rotate, new_col))
+                next_states_dqn.append(state_dqn)
+                next_states.append(next_state)
                 cleared_rows.append(cleared)
+                actions.append(action)
+                action = [x for x in action[0:3] if x == 3]  # leave only the rotate actions
+                            
+            
+        return next_states, next_states_dqn, actions, cleared_rows
 
-        return states, states_dqn, actions, cleared_rows
-
+    def calc_steps(self, col, new_col):
+         
+        if new_col > col:
+            action = 2 # right
+        elif new_col < col:
+            action = 1 # left
+        else:
+            action = 0 # stay
+        actions_list = [action] * abs(new_col-col)
+        actions_list += [4]  # full_drop
+        return actions_list

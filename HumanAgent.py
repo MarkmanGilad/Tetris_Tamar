@@ -25,9 +25,9 @@ class HumanAgent:
                     action = 4
                 # if env.not_legal(state, action):
                 #     return None
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_DOWN:
-                    action = 5
+            # elif event.type == pygame.KEYUP:
+            #     if event.key == pygame.K_DOWN:
+            #         action = 5
         return action
     
     def get_end_Action(self, events):

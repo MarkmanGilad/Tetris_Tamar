@@ -12,21 +12,23 @@ class ReplayBuffer:
         else:
             self.buffer = deque(maxlen=capacity)
 
-    def push (self, state , action, reward, next_state, done):
-        self.buffer.append((torch.from_numpy(state), torch.tensor(action, dtype=torch.float32), torch.tensor(reward, dtype=torch.float32), torch.from_numpy(next_state), torch.tensor(done, dtype=int)))
+    def push (self, state , action, reward, next_state, next_state_dqn, done):
+        self.buffer.append((state, action, reward, next_state, next_state_dqn, done))
         # self.buffer.append((state.toTensor(), action.type(torch.float32), torch.tensor(reward, dtype=torch.float32), next_state.toTensor(), torch.tensor(done, dtype=int)))
 
     
     def sample (self, batch_size):
-        if (batch_size > self.__len__()):
-            batch_size = self.__len__()
-        state_tensors, action_tensor, reward_tensors, next_state_tensors, dones_tensor = zip(*random.sample(self.buffer, batch_size))
-        states = torch.vstack(state_tensors)
-        actions= torch.vstack(action_tensor)
-        rewards = torch.vstack(reward_tensors)
-        next_states = torch.vstack(next_state_tensors)
-        dones = torch.vstack(dones_tensor)
-        return states, actions, rewards, next_states, dones
+        states, actions, rewards, next_states, next_states_dqn, dones = zip(*random.sample(self.buffer, batch_size))
+        # states = torch.vstack(state_tensors)
+        # actions= torch.vstack(action_tensor)
+        np_batch = np.stack(rewards)
+        rewards_tensor = torch.from_numpy(np_batch).to(torch.float32).reshape(-1,1)
+        # next_states = torch.vstack(next_state_tensors)
+        np_batch = np.stack(next_states_dqn)
+        next_states_dqn_tensor = torch.from_numpy(np_batch).to(torch.float32)
+        np_batch = np.stack(dones)
+        dones_tensor = torch.from_numpy(np_batch).to(torch.float32).reshape(-1,1)
+        return states, actions, rewards_tensor, next_states, next_states_dqn_tensor, dones_tensor
 
     def __len__(self):
         return len(self.buffer)

@@ -15,9 +15,9 @@ state = State()
 env = Environment(state=state)
 dqn = DQN_Agent(env=env)
 
-# player = HumanAgent(env)
+player = HumanAgent(env)
 # player = RandomAgent(env)
-player = dqn
+# player = dqn
 
 FPS = 60
 

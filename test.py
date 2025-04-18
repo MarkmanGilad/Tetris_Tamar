@@ -6,12 +6,13 @@ from State import State
 def all_states():
     state = State()
     env = Environment(state=state)
-    states, states_dqn, actions, cleared_rows = env.all_states(state)
+    next_states, next_states_dqn, actions, cleared_rows = env.all_states(state)
 
-    print(states)
-    print(states_dqn)
+    print(next_states)
+    print(next_states_dqn)
     print(actions)
     print(cleared_rows)
+    
 
 def pieces_test():
     pieces = {
